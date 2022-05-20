@@ -1,1 +1,1 @@
-# Praktikum-Algoritma-Pemprogaman
+# Praktikum Algoritma Pemprogaman
