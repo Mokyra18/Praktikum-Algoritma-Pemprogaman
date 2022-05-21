@@ -22,5 +22,31 @@ int main(){
 }
 
 
+//Program do while Menentukan bilangan genap atau ganjil 1-100
+#include <iostream>
+using namespace std;
 
-//Program Do While
+int main(){
+    int bil;
+    int i;
+    do {
+    cout<<"== Program Menentukan Bilangan Ganjil Atau genap ==\n";
+    cout<<" Masukan Bilangan (1-100) = ";
+    cin>>bil;
+    
+    if (bil<=100){
+        if (bil%2==0){
+            cout<<" Bilangan "<<bil<<" Adalah Genap\n";
+            i = 0;
+        }else{
+            cout<<" Bilangan "<<bil<<" Adalah Ganjil\n";
+            i = 0;
+        }
+    }
+    }
+    while (bil>100);
+    if (i!=0){
+        cout<< "Maaf Angka Diluar Batas Maksimum! \n";
+    }
+    return 0;
+}
