@@ -1,8 +1,26 @@
-//While
-
-Include<iostream>
+//Program while menurunkan nilai deret dengan batas
+#include <iostream>
 using namespace std;
-Int main (){
 
+int main(){
+     int deret;
+     cout<<"============================="<<endl;
+     cout<<" Program Deret Angka (While) "<<endl;
+     cout<<"=============================\n\n";
+     cout<<"Masukan deret Angka yang akan ditampilkan : ";
+     cin>>deret;
+     cout<<endl;
 
+     while(deret>0 && deret<100){
+          cout<<deret<<"  ";
+          deret--; 
+     }
+
+     cout<<"\n\n== Deret Selesai Ditampilkan ==\n";
+
+     return 0;
 }
+
+
+
+//Program Do While
