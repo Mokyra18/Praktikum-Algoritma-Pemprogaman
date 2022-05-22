@@ -22,31 +22,25 @@ int main(){
 }
 
 
-//Program do while Menentukan bilangan genap atau ganjil 1-100
+// program untuk menemukan jumlah angka positif dengan do while
+// jika pengguna menginputkan angka negatif, loop berakhir
+
 #include <iostream>
 using namespace std;
-
-int main(){
-    int bil;
-    int i;
-    do {
-    cout<<"== Program Menentukan Bilangan Ganjil Atau genap ==\n";
-    cout<<" Masukan Bilangan (1-100) = ";
-    cin>>bil;
+ 
+int main() {
+    int angka =0;
+    int i = 0;
     
-    if (bil<=100){
-        if (bil%2==0){
-            cout<<" Bilangan "<<bil<<" Adalah Genap\n";
-            i = 0;
-        }else{
-            cout<<" Bilangan "<<bil<<" Adalah Ganjil\n";
-            i = 0;
-        }
-    }
-    }
-    while (bil>100);
-    if (i!=0){
-        cout<< "Maaf Angka Diluar Batas Maksimum! \n";
+    cout << " == Program Menjumlahkan Angka Positif == \n";
+    do {
+    cout << " Masukan Angka = ";
+    cin >> angka;
+    i += angka;
+    
+    } 
+    while (angka >= 0); {
+        cout << "\nJumlah akhirnya = " << i << endl;
     }
     return 0;
 }
