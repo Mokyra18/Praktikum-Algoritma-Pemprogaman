@@ -107,3 +107,45 @@ int main() {
   }
 
 }
+
+
+//Program Struct dengan Continue memilih makanan dan minuman yang kadaluarsa 
+#include <iostream>
+using namespace std;
+
+struct Produk_t {
+    int no;
+    string nama;
+    int harga;
+    int expired;
+};
+
+int main() {
+    
+    int expired_maksimal = 2021;
+    //jika expired barang kurang dari sama dengan tahun 2021 harus dibuang
+    
+    Produk_t produk[] = {
+        {1, "Kaki 3 Larutan 200ml", 3900, 2023},
+        {2, "Lemon Tea 330ml", 4000, 2022},
+        {3, "Buahvita Apple 500ml", 15400, 2018},
+        {4, "Teh Pucuk Harum", 6600, 2022},
+        {5, "Mayo Sarden Tomato 425g", 24000, 2019},
+        {6, "Sarimie Mie Goreng 100g", 3000, 2022},
+        {7, "Tropical Minyak Goreng 2L", 50000, 2025},
+        {8, "Abon Sapi 100g", 11300, 2021},
+        {9, "Energen Sereal 10x32g", 21600, 2023},
+        {10, "Chocolate meises 90g", 5000, 2015},
+    };
+    
+    for(int i = 0; i < 10; i++) {
+        
+        if(produk[i].expired > expired_maksimal) {
+            cout<< produk[i].nama << " Belum Expired " << endl;
+            continue;
+        }
+        
+        cout << "Produk " << produk[i].nama << " Sudah Expired! Silahkan Buang" << endl;
+    }
+    
+}
