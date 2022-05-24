@@ -44,3 +44,66 @@ int main() {
     }
     return 0;
 }
+
+
+//Program Struct dan break
+#include <iostream>
+
+using namespace std;
+
+struct aplikasi_x {
+  int no;
+  string nama;
+  string pendiri;
+  string negara;
+};
+
+int main() {
+
+  aplikasi_x apk[] = {
+    {
+      1,
+      "Instagram",
+      "Kevin Systrom",
+      "Amerika"
+    },
+    {
+      2,
+      "WhatsApp",
+      "Brian Acton & jan koum",
+      "Amerika"
+    },
+    {
+      3,
+      "Facebook",
+      "Mark Zuckerberg",
+      "Amerika"
+    },
+    {
+      4,
+      "Tiktok",
+      "Zhang Yiming",
+      "China"
+    },
+    {
+      5,
+      "Telegram",
+      "Pavel Durov & Nikolai Durov",
+      "Rusia"
+    }
+  };
+
+  int ApkTerlaris = 4;
+
+  for (int i = 0; i < 5; i++) {
+
+    if (apk[i].no == ApkTerlaris) {
+      cout << "Aplikasi " << apk[i].nama << " merupakan aplikasi terlaris tahun 2021, diunduh 656 juta!\n";
+
+      break;
+    }
+
+    cout << "Aplikasi " << apk[i].nama << " pendirinya " << apk[i].pendiri << " dari negara " << apk[i].negara << "." << endl;
+  }
+
+}
