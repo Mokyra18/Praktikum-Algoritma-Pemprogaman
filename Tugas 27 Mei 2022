@@ -1,0 +1,92 @@
+#include <iostream>
+
+using namespace std;
+
+#define Atas 72 //tombol bergerak ke atas
+#define Bawah 80 //tombol bergerak ke bawah
+#define Kiri 75 //tombol bergerak ke kiri 
+#define Kanan 77 //tombol bergerak ke kanan
+
+int main() {
+    
+    int panjangPeta = 10; // x
+    int lebarPeta = 8; // y
+    
+    int posisiKarakterY = 4;
+    int posisiKarakterX = 4;
+    
+    cout << "Karakter ada di y:" << posisiKarakterY << ", x:" << posisiKarakterX << "\n";
+    //1 = Jalan
+    //2 = Batu
+    //3 = genangan air
+    //4 = gedung
+    //5 = pohon
+    int peta[lebarPeta][panjangPeta] = {
+        {2,2,1,1,1,1,1,1,5,5},
+        {3,3,3,1,1,1,1,1,2,2},
+        {3,3,3,1,1,1,1,1,1,8},
+        {3,3,3,1,1,1,1,1,1,8},
+        {3,1,1,1,1,1,1,1,1,8},
+        {3,8,8,8,8,8,1,1,1,1},
+        {1,1,4,4,4,4,1,1,1,1},
+        {2,2,1,5,5,1,1,1,1,1},
+        
+    };
+    
+    
+    int arrowKey = 0;
+    
+    /*
+    #define Tombol_Atas 72
+    #define Tombol_Bawah 80
+    #define Tombol_Kiri 75
+    #define Tombol_Kanan 77
+    */
+    
+    while(1) {
+        // Input Keyboard
+        cout << "Masukan arrow key ";
+        cin >> arrowKey;
+        cout << "Arrow key yang dimasukan " << arrowKey << "\n";
+        
+        // Aturan menggerakkan karakter ke atas
+        if(arrowKey == 72 && (peta[posisiKarakterY-1][posisiKarakterX] == 1 || peta[posisiKarakterY-1][posisiKarakterX] == 4) && posisiKarakterY >= 0) {
+            // Gerakkan karakter ke atas
+            posisiKarakterY = posisiKarakterY-1;
+        }
+        
+        // Aturan menggerakkan karakter ke bawah
+        if(arrowKey == 80 && (peta[posisiKarakterY+1][posisiKarakterX] == 1 || peta[posisiKarakterY+1][posisiKarakterX] == 4) && posisiKarakterY < lebarPeta) {
+            // Gerakkan karakter ke atas
+            posisiKarakterY = posisiKarakterY+1;
+        }
+        
+        // Aturan menggerakkan karakter ke kiri
+        if(arrowKey == 75 && (peta[posisiKarakterY][posisiKarakterX-1] == 1 || peta[posisiKarakterY][posisiKarakterX-1] == 4) && posisiKarakterX >= 0) {
+            // Gerakkan karakter ke atas
+            posisiKarakterX = posisiKarakterX-1;
+        }
+        
+        // Aturan menggerakkan karakter ke kanan
+        if(arrowKey == 77 && (peta[posisiKarakterY][posisiKarakterX+1] == 1 || peta[posisiKarakterY][posisiKarakterX+1] == 4) && posisiKarakterX < panjangPeta) {
+            // Gerakkan karakter ke atas
+            posisiKarakterX = posisiKarakterX+1;
+        }
+        
+        // Render grafik
+        for(int y=0; y<lebarPeta; y++) {
+            for(int x=0; x<panjangPeta; x++) {
+                
+                if(posisiKarakterX == x && posisiKarakterY == y) {
+                    cout << 0 << " ";
+                } else {
+                    cout << peta[y][x] << " ";
+                }
+            }
+            cout << "\n";
+        }
+    }
+     
+    
+    return 0;
+}
