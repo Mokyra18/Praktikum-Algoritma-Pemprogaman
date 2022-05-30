@@ -1,10 +1,13 @@
-##raktikum Algoritma Pemprogaman
-#Tugas Praktikum Algoritma Tanggal 20 Mei 2022
+# Praktikum Algoritma Pemprogaman
+## Tugas Praktikum Algoritma Tanggal 20 Mei 2022
 
+### While
+
+```cpp
 //Program while menurunkan nilai deret dengan batas
+
 #include <iostream>
 using namespace std;
-
 int main(){
      int deret;
      cout<<"============================="<<endl;
@@ -23,8 +26,12 @@ int main(){
 
      return 0;
 }
+```
 
 
+### Do While
+
+```cpp
 // program untuk menemukan jumlah angka positif dengan do while
 // jika pengguna menginputkan angka negatif, loop berakhir
 
@@ -47,8 +54,11 @@ int main() {
     }
     return 0;
 }
+```
 
+### Struct & Break
 
+```cpp
 //Program Struct dan break
 #include <iostream>
 
@@ -110,8 +120,11 @@ int main() {
   }
 
 }
+```
 
+### Struct & Continue
 
+```cpp
 //Program Struct dengan Continue memilih makanan dan minuman yang kadaluarsa 
 #include <iostream>
 using namespace std;
@@ -152,3 +165,4 @@ int main() {
     }
     
 }
+```
