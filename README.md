@@ -11,4 +11,5 @@
 
 ## Tempat Menyimpan Tugas
 
-- [Tugas Tanggal 20 Mei 2022](https://github.com/insanalamin/IF212002/tree/main/Tugas-Tanggal-20-Mei-2022/LOOPING)
+- [Tugas Tanggal 20 Mei 2022](https://github.com/Mokyra18/Praktikum-Algoritma-Pemprogaman/tree/main/Tugas-Tanggal-20-Mei-2022/LOOPING)
+- [Tugas Tanggal 27 Mei 2022](https://github.com/Mokyra18/Praktikum-Algoritma-Pemprogaman/tree/main/Tugas-Tanggal-27-Mei-2022/Matriks)
