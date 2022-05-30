@@ -1,5 +1,6 @@
-# Matriks
-
+# Matriks Program Membuat Game Berbasis Tile 2D
+### Nama Game Menemukan Harta Karun
+```cpp
 #include <iostream>
 using namespace std;
 
@@ -32,7 +33,7 @@ int main() {
         {5,5,3,3,4,4,1,1,2,1,5,5},
         {5,5,1,1,4,4,1,3,3,3,5,5},
         {5,5,1,4,4,1,1,3,3,3,5,5},
-		{5,5,5,5,5,5,1,5,5,5,5,5},
+	{5,5,5,5,5,5,1,5,5,5,5,5},
 		
     };
     
@@ -88,3 +89,4 @@ int main() {
 	}
     return 0;
 }
+```
