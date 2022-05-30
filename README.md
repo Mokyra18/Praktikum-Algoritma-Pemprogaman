@@ -12,4 +12,4 @@
 ## Tempat Menyimpan Tugas
 
 - [Tugas Tanggal 20 Mei 2022](https://github.com/Mokyra18/Praktikum-Algoritma-Pemprogaman/blob/main/Tugas%20Tanggal%2020%20Mei%202022/LOOPING.md)
-- [Tugas Tanggal 27 Mei 2022](https://github.com/Mokyra18/Praktikum-Algoritma-Pemprogaman/tree/main/Tugas-Tanggal-27-Mei-2022/Matriks)
+- [Tugas Tanggal 27 Mei 2022](https://github.com/Mokyra18/Praktikum-Algoritma-Pemprogaman/blob/main/Tugas%20Tanggal%2027%20Mei%202022/Matriks.md)
