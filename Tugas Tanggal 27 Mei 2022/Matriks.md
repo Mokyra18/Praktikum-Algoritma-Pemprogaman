@@ -1,12 +1,23 @@
 # Matriks Program Membuat Game Berbasis Tile 2D
-### Nama Game Menemukan Harta Karun
+## Nama Game Berburu Harta Karun
+### Keterangan :
+1 = Jalan atau rumput (bisa dilewati karakter)
+
+2 = Batu (tidak bisa dilewati karakter)
+
+3 = genangan air (bisa dilewati dan muncul harta karun secara random)
+
+4 = semak semak (dapat dilewati dan muncul harta karun secara random)
+
+5 = pohon (tidak bisa dilewati karakter)
 ```cpp
 #include <iostream>
+#include <stdlib.h>
 using namespace std;
 
-#define Atas 10 //tombol bergerak ke atas
+#define Atas  10 //tombol bergerak ke atas
 #define Bawah 20 //tombol bergerak ke bawah
-#define Kiri 30 //tombol bergerak ke kiri 
+#define Kiri  30 //tombol bergerak ke kiri 
 #define Kanan 40 //tombol bergerak ke kanan
 
 int main() {
@@ -17,22 +28,21 @@ int main() {
     int posisiKarakterY = 2;
     int posisiKarakterX = 6;
     
-    cout << "Karakter ada di y:" << posisiKarakterY << ", x:" << posisiKarakterX << "\n";
-    //1 = Jalan atau rumput (bisa dilewati karakter)
-    //2 = Batu (tidak bisa dilewati karakter)
-    //3 = genangan air (bisa dilewati dan muncul Harta karun secara random)
-    //4 = semak semak (dapat dilewati dan muncul harta karun secara random)
-    //5 = pohon
+    cout<<"============================================="<<endl;
+    cout << "Selamat Datang di Game Berburu Harta Karun!"<<endl;
+    cout<<"============================================="<<endl;
+    cout <<"\nKarakter Anda Berada di Y: " << posisiKarakterY << " dan X: " << posisiKarakterX << "\n";
+
     int peta[lebarPeta][panjangPeta] = {
         {5,5,5,5,5,5,1,5,5,5,5,5},
-        {5,5,2,2,1,1,1,1,1,1,5,5},
-        {5,5,2,1,4,4,4,4,1,1,5,5},
-        {5,5,2,1,4,1,1,1,1,2,5,5},
-        {1,1,1,1,4,1,1,1,1,1,1,1},
-        {5,5,3,3,1,2,1,1,1,1,5,5},
-        {5,5,3,3,4,4,1,1,2,1,5,5},
-        {5,5,1,1,4,4,1,3,3,3,5,5},
-        {5,5,1,4,4,1,1,3,3,3,5,5},
+        {5,5,2,2,1,1,1,1,1,4,5,5},
+        {5,5,2,1,4,1,1,4,1,1,5,5},
+        {5,5,2,1,1,2,2,1,1,1,5,5},
+        {1,1,1,1,1,1,1,1,4,1,1,1},
+        {5,5,3,1,1,2,1,1,1,1,5,5},
+        {5,5,1,1,4,2,1,1,2,3,5,5},
+        {5,5,1,1,2,1,1,1,1,2,5,5},
+        {5,5,3,2,2,1,1,1,3,2,5,5},
 	{5,5,5,5,5,5,1,5,5,5,5,5},
 		
     };
@@ -42,10 +52,15 @@ int main() {
     
     while(1) {
         // Input Keyboard
-        cout<<	"\n Keterangan :\n Bergerak Ke Atas = 10\n Bergerak Ke Bawah = 20\n Bergerak Ke Kiri = 30\n Bergerak Ke Kanan = 40\n"<<endl;
-        cout << "Masukan arrow key ";
+        cout<< "\nKeterangan =\n";
+		cout<< "Bergerak Ke Atas  = 10\n";
+		cout<< "Bergerak Ke Bawah = 20\n";
+		cout<< "Bergerak Ke Kiri  = 30\n";
+		cout<< "Bergerak Ke Kanan = 40\n";
+        cout << "\nMasukan arrow key = ";
         cin >> arrowKey;
-        cout << "Arrow key yang dimasukan " << arrowKey << "\n"<<endl;
+        cout << "\nArrow key yang dimasukan " << arrowKey << "\n"<<endl;
+        cout <<"\nKarakter Anda Berada di Y: " << posisiKarakterY << " dan X: " << posisiKarakterX << "\n";
         
         // Aturan menggerakkan karakter ke atas
         if(arrowKey == 10 && (peta[posisiKarakterY-1][posisiKarakterX] == 1 || peta[posisiKarakterY-1][posisiKarakterX] == 3 || peta[posisiKarakterY-1][posisiKarakterX] == 4 ) && posisiKarakterY >= 0) {
@@ -85,7 +100,14 @@ int main() {
             }
             cout << "\n";
         }
-        
+        if (peta[posisiKarakterY][posisiKarakterX] == 3 || peta[posisiKarakterY][posisiKarakterX] == 4 ){
+        	cout<<"\nHarta Karun Berada Diantara Semak dan Genangan Air Carilah!"<<endl;	
+		}
+		int random;
+		if (peta[posisiKarakterY][posisiKarakterX] == 3 || peta[posisiKarakterY][posisiKarakterX] == 4){
+		random = (rand()%5);
+		cout<< "Kamu Mendapatkan " << random<< " Harta Karun!"<<endl;
+		}
 	}
     return 0;
 }
