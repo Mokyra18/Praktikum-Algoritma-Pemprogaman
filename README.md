@@ -1,4 +1,4 @@
-# Mata Kuliah Praktikum ALgoritma & Pemprogaman
+# Mata Kuliah Praktikum Algoritma & Pemprogaman
 - Nama            : Mochammad Rizky Ramadhani
 - NIM             : 1217050081
 - Kelas           : Teknik Informatika B
