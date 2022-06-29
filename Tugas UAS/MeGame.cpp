@@ -140,8 +140,8 @@ int main() {
 	//int move_Random = rand() %2 +1  ;  // random number between 1 and 2 
     
     while(true) {
-    	randomMonster = rand () % 40;
-    	randomTreasure = rand() % 30;
+	randomTreasure = rand() % 30;
+    	randomMonster = rand () % 30;
         // Input Keyboard
         cout << "\nMasukan Arah = ";
         arrowKey = getch();
