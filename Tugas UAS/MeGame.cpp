@@ -1,10 +1,7 @@
-
-#include <iostream>
-#include <conio.h>
-#include <stdlib.h>
-#include <windows.h>
-#include <time.h>
-#include <MMsystem.h>
+#include <iostream> //library in or ouput
+#include <conio.h> //library movement karakter
+#include <stdlib.h> //library rand
+#include <windows.h> //library color
 using namespace std;
 
 #define KEY_UP 72 //tombol bergerak ke atas
@@ -13,496 +10,885 @@ using namespace std;
 #define KEY RIGHT 80 //tombol bergerak ke kanan
 #define KEY_EXIT 27 //tombol exit
 
-void judul_game() 
-{	
+//define structure player
+struct player {
+	string nama;
+	int hp;
+	int dmg;
+	string jurus[3];
+	string role;
+};
 
-	cout << "||------------------------------------------------------||\n";
-	cout << "||                  Welcome to The Maze                 ||\n";
-	cout << "||                    a game made by                    ||\n";
-	cout << "||                   M Rizky Ramadhani                  ||\n";
-	cout << "||------------------------------------------------------||\n";
-	cout << endl;
-	cout << "The Maze adalah game yang berlatar tempat disebuah labirin.\n";
-	cout << "Dimana setiap karakter diharuskan mengeksplor labirin.\n";
-	cout << "Karakter akan menghadapi berbagai rintangan di dalam\n";
-	cout << "labirin seperti melawan musuh dan mencari item-item.\n";
-	cout << "Ayo mainkan The Maze dan Bantu Karakter agar dapat survive dari labirin!\n";
-}
-
+//function color set
 void setcolor(unsigned short color)
 {
 	HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hCon, color);
 }
 
-struct treasureInfo {
-	string nama;
-	int hp;
-	int def;
-	int damage;
-	
+//ukuran map
+const int panjangPeta = 18; //y
+const int lebarPeta = 16; //x
 
-};
+int arrowKey = 0;
+//posisi karakter di awal game
+int posisiKarakterY = 1;
+int posisiKarakterX = 1;
 
-struct monsterInfo {
-	string nama;
-	int Hp;
-	int damage;
-	int def;
+//tampilan maps
+string peta[lebarPeta][panjangPeta] = {
+        {"#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#"},
+        {"#"," "," "," "," "," "," "," "," "," ","^"," "," "," ","!"," "," ","#"},
+        {"#"," "," ","#","#"," ","^","^","^","^","^"," ","^","^","^","^","^","#"},
+        {"#"," ","#","^","^"," ","^","!"," "," ","#"," ","^"," "," "," ","#","#"},
+        {"#"," "," "," "," ","^","^"," ","#","#","#"," ","^"," ","#","#"," ","#"},
+        {"#","^","^"," "," "," "," "," "," "," ","#"," "," "," ","#"," ","E","#"},
+        {"#"," ","^"," "," "," ","#","#","#"," ","^"," ","#","#","#","!","B","#"},
+        {"#","E","^","^","^"," "," "," "," "," ","^"," "," "," ","#","!","E","#"},
+        {"#"," ","^"," "," "," ","#","#","#","#","^"," "," "," "," ","#","#","#"},
+        {"#","^"," "," ","^"," ","#"," "," ","#"," "," "," "," ","#"," ","E","#"},
+        {"#"," "," "," ","^","!","#","#"," ","#"," ","^"," ","#","#","!"," ","#"},
+        {"#"," ","^","E","^","#"," "," "," "," "," ","^"," "," ","^"," "," ","#"},
+        {"#"," ","^","^"," "," "," "," "," ","^","^","^"," ","^","^"," "," ","#"},
+        {"#"," "," ","^"," ","#","#"," "," "," "," ","E"," "," ","!"," ","^","#"},
+        {"#"," "," "," "," ","#"," "," "," ","#"," "," "," ","^","^"," ","|","#"},
+        {"#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#"},
+        };
 
-	void AtkMonster(int *player_hp, int *player_def)
-	{
-		*player_hp = *player_hp - (damage - *player_def);
-	}
-};
-
-struct playerInfo {
-	string nama;
-	int Hp;
-	int damage;
-	int def; 
-	
-	void AtkPlayer(int *monster_hp, int *monster_def)
-	{
-		*monster_hp = *monster_hp - (damage - *monster_def);
-	}	
-};
+//define judul
+void judul();
+//define tombol gerak karakter
+void movement();
+//define musuh tingkatan easy
+void bertarung();
+//define musuh tingkatan medium
+void enemy();
+//define musuh tingkatan hard
+void bos();
+//define gerbang bos
+void tombol();
 
 
+int main (){
+	judul();
+
 	
-int main() {
-    
-    //treasure info
-    treasureInfo bonus[] = {
-	{"Pedang Legenda", 0, 100, 1000},
-	{"Dragon Armor", 1000, 1000, 20},
-	};
-	
-	//player info 
-	playerInfo player;
-		player.nama = "Berandalan Terpelajar";
-		player.Hp = 1000;
-		player.damage = 200;
-		player.def = 100;
-	
-	//monster info
-		monsterInfo monster1;
-		monster1.nama =	"Zombie Kelaparan";
-		monster1.Hp = 2000;
-		monster1.damage = 100;
-		monster1.def = 30;
-		
-		monsterInfo monster2;
-		monster2.nama =	"Buaya Ganas";
-		monster2.Hp = 3000;
-		monster2.damage = 120;
-		monster2.def = 40;
-	
-    //ukuran peta
-    int panjangPeta = 15; // x
-    int lebarPeta = 12; // y
-    
-    //posisi karakter dalam peta
-    int posisiKarakterY = 3;
-    int posisiKarakterX = 3;
-    int randomTreasure;
-    int randomMonster;
-    int pilihan;
-	int serang; 
-	char keputusan;
-    
-    /*1 = Jalan berbatu (bisa dilewati karakter)
-    3 = sungai (bisa dilewati dan muncul Harta karun secara random)
-    4 = tanah (dapat dilewati dan muncul harta karun secara random)
-    5 = dinding batu (tidak dapat dilewati karakter)
-    */
-	
-     int peta[lebarPeta][panjangPeta] = {
-        {5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
-        {5, 1, 3, 1, 5, 5, 3, 3, 3, 3, 3, 3, 5, 5 ,5},
-        {5, 1, 3, 1, 1, 1, 1, 5, 1, 1, 1, 1, 3, 5, 5},
-        {5, 5, 3, 3, 3, 5, 5, 5, 1, 5, 3, 3, 3, 5, 5},
-        {5, 1, 5, 5, 1, 1, 1, 1, 1, 3, 1, 1, 5, 5, 5},
-        {5, 1, 5, 1, 1, 3, 3, 1, 1, 3, 3, 5, 5, 5, 5},
-        {5, 1, 1, 1, 1, 5, 3, 1, 5, 5, 1, 1, 5, 5, 5},
-        {5, 1, 5, 1, 1, 1, 5, 1, 1, 1, 1, 1, 1, 5, 5},
-        {5, 1, 5, 5, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 5},
-        {5, 5, 5, 1, 3, 3, 3, 3, 3, 3, 1, 5, 1, 5, 5},
-        {5, 1, 1, 1, 3, 5, 5, 5, 3, 3, 3, 3, 3, 5, 5},
-        {5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 1, 5, 5},
-    };
-    setcolor (15);
-    judul_game();
-    cout << endl;
-    setcolor (12);
-    cout <<"\nKarakter Anda Berada di Y: " << posisiKarakterY << " dan X: " << posisiKarakterX << "\n";
-	int arrowKey = 0;
-	//int move_Random = rand() %2 +1  ;  // random number between 1 and 2 
-    
-    while(true) {
-	randomTreasure = rand() % 30;
-    	randomMonster = rand () % 30;
-        // Input Keyboard
-        cout << "\nMasukan Arah = ";
-        arrowKey = getch();
-        cout << "\nArah yang dimasukan " << arrowKey << "\n"<<endl;
-		
-		system("cls");
+	while (1){
+	    // Render grafik
+        for(int y=0; y<lebarPeta; y++) {
+            for(int x=0; x<panjangPeta; x++) {  
+				setcolor(7);     
+                if(posisiKarakterX == x && posisiKarakterY == y) {
+                	setcolor(12);
+                    cout << "Y" << " ";
+                } 
+                else{
+                cout << peta[y][x] << " ";
+                }
+            }
+            cout << "\n";
+            }
+			if (peta[posisiKarakterY][posisiKarakterX] == "!"){
+                bertarung(); //easy
+            	peta[posisiKarakterY][posisiKarakterX] = " ";
+            }
+            
+            if (peta[posisiKarakterY][posisiKarakterX] == "E"){
+                enemy(); //medium 
+                peta[posisiKarakterY][posisiKarakterX] = " ";
+        	}
+            if (peta[posisiKarakterY][posisiKarakterX] == "B"){
+                bos(); //hard
+                peta[posisiKarakterY][posisiKarakterX] = " ";
+        	}
+        	if (peta[posisiKarakterY][posisiKarakterX] == "|"){
+                tombol(); //tombol gerbang
+            }
+        	
+	        //Input Arah karakter	
+	        cout << "Masukkan Arrowkey :";
+	        arrowKey = _getch();
+	        movement();
+	        system("cls");
         
-        // Aturan menggerakkan karakter ke atas
+			}	
+}
+//function enemy (eazy)
+void bertarung(){
+    int hp;
+    int dmg;
+    int dmgemy;
+    int att;
+    int hpemy1 = 300;
+    
+	
+	//player info
+	player player1;
+	player1.nama = "tork";
+	player1.hp = 500;
+	player1.role = "Fighter";
+	player1.jurus [0] = "tinju maut";
+	player1.jurus [1] = "tendangan memutar";
+	player1.jurus [2] = "sundulan besi";
+	
+	player player2;
+	player2.nama = "syan";
+	player2.hp =200;
+	player2.role = "assasin";
+	player2.jurus [0] = "pedang tajam";
+	player2.jurus [1] = "sabitan sabuk";
+	player2.jurus [2] = "tendangan roket";
+   
+   	player player3;
+	player3.nama = "Jonta";
+	player3.hp = 400;
+	player3.role = "penembak";
+	player3.jurus [0] = "pistol api";
+	player3.jurus [1] = "granat sembur";
+	player3.jurus [2] = "sniper";
+		
+    system("cls");
+    	int pilih;
+    	setcolor (9); //light blue
+        cout << "Pilih Petarunx\n";
+        cout << "1. Tork\n";
+        cout << "2. Syan \n";
+        cout << "3.jonta \n";
+        cout << "petarunx pilihanmu = ";
+        cin >> pilih;
+        
+        system("cls");
+        kalah:
+        if (pilih == 1){
+            cout << "Memilih " << player1.nama << "\nMulai bertarung" << endl;
+            
+            while((hpemy1 > 0 ) && (player1.hp > 0)){
+                cout << " ========== Arena Bertarung  ==========\n"<< endl;
+                cout << "Pilih Serangan: " <<endl;
+                cout << "1." << player1.jurus[0] << endl;
+                cout << "2." << player1.jurus[1] <<endl;
+                cout << "3." << player1.jurus[2] << endl;
+                cout << "jurus yang dipilih : ";
+                cin >> att; 
+                cout << endl;
+                system("cls");
+
+                switch(att){
+                    case 1 :
+                    dmg = rand() % 10 + 5;
+                    hpemy1 = hpemy1 - dmg;
+                    break;
+
+                    case 2 :
+                    dmg = rand() % 12 + 4;
+                    hpemy1 = hpemy1 - dmg;
+                    break;
+
+                    case 3 : 
+                    dmg = rand() % 20 + 7;
+                    hpemy1 = hpemy1 - dmg;
+                    break;
+                    
+                    }
+
+                dmgemy = rand() % 18 + 2;
+                player1.hp = player1.hp - dmgemy;  
+                    
+                if(hpemy1 >0 && player1.hp >0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl ;
+                    cout << "Darah Musuh = " << hpemy1 << "%" << endl;
+                    cout << "Darah Karakter = " << player1.hp << "%" << endl;
+                    cout << "================" << endl;
+                    cout << endl;
+                    }
+                if (hpemy1 < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh Habis" << endl;
+                    cout << "Darah Karakter " << player1.hp << "%" << endl;
+                    cout << "Kamu telah menang!!"<< endl;
+                    cout << "================" << endl;
+                    goto menang;
+                    cout <<endl;
+                }
+                if(player1.hp < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh = " << hpemy1 << "%" << endl;
+                    cout << "Darah Karakter Habis" << endl;
+                    system("cls");
+                    cout <<"Kamu kalah, Lakukan tanding ulang" <<endl;
+                    cout << "================" << endl;
+                    goto kalah;
+                    cout <<endl;
+                }
+            }
+        }
+        if (pilih == 2){
+            cout << "Memilih " << player2.nama << "\nMulai bertarung" << endl;
+            
+            while((hpemy1 > 0 ) && (player2.hp > 0)){
+            	setcolor (14); //light yellow
+                cout << " ========== Arena Bertarung  ==========\n"<< endl;
+                cout << "Pilih Serangan: " <<endl;
+                cout << "1." << player2.jurus[0] << endl;
+                cout << "2." << player2.jurus[1] <<endl;
+                cout << "3." << player2.jurus[2] << endl;
+                cout << "jurus yang dipilih : ";
+                cin >> att; 
+                cout << endl;
+                system("cls");
+
+                switch(att){
+                    case 1 :
+                    dmg = rand() % 15 + 5;
+                    hpemy1 = hpemy1 - dmg;
+                    break;
+
+                    case 2 :
+                    dmg = rand() % 16 + 4;
+                    hpemy1 = hpemy1 - dmg;
+                    break;
+
+                    case 3 : 
+                    dmg = rand() % 20 + 9;
+                    hpemy1 = hpemy1 - dmg;
+                    break;
+
+                    }
+
+                dmgemy = rand() % 16 + 9;
+                player2.hp = player2.hp - dmgemy;  
+                    
+                if(hpemy1 >0 && player2.hp >0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl ;
+                    cout << "Darah Musuh = " << hpemy1 << "%" << endl;
+                    cout << "Darah Karakter = " << player2.hp << "%" << endl;
+                    cout << "================" << endl;
+                    cout << endl;
+                    }
+                if (hpemy1 < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh Habis" << endl;
+                    cout << "Darah Karakter " << player2.hp << "%" << endl;
+                    cout << "Kamu telah menang!!"<< endl;
+                    cout << "================" << endl;
+                    goto menang;
+                    cout <<endl;
+                }
+                if(player2.hp < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh = " << hpemy1 << "%" << endl;
+                    cout << "Darah Karakter Habis" << endl;
+                    system("cls");
+                    cout <<"Kamu kalah, Lakukan tanding ulang" <<endl;
+                    cout << "================" << endl;
+                    goto kalah;
+                    cout <<endl;
+                }
+            }
+        }
+        if (pilih == 3){
+            cout << "Memilih " << player3.nama << "\nMulai bertarung" << endl;
+            
+            while((hpemy1 > 0 ) && (player3.hp > 0)){
+            	setcolor (9); //light blue
+                cout << " ========== Arena Bertarung  ==========\n"<< endl;
+                cout << "Pilih Serangan: " <<endl;
+                cout << "1." << player3.jurus[0] << endl;
+                cout << "2." << player3.jurus[1] <<endl;
+                cout << "3." << player3.jurus[2] << endl;
+                cout << "jurus yang dipilih : ";
+                cin >> att; 
+                cout << endl;
+                system("cls");
+
+                switch(att){
+                    case 1 :
+                    dmg = rand() % 25 + 2;
+                    hpemy1 = hpemy1 - dmg;
+                    break;
+
+                    case 2 :
+                    dmg = rand() % 20 + 4;
+                    hpemy1 = hpemy1 - dmg;
+                    break;
+
+                    case 3 : 
+                    dmg = rand() % 50 + 2;
+                    hpemy1 = hpemy1 - dmg;
+                    break;
+
+                    }
+
+                dmgemy = rand() % 18 + 6;
+                player3.hp = player3.hp - dmgemy;  
+                    
+                if(hpemy1 >0 && player3.hp >0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl ;
+                    cout << "Darah Musuh = " << hpemy1 << "%" << endl;
+                    cout << "Darah Karakter = " << player3.hp << "%" << endl;
+                    cout << "================" << endl;
+                    cout << endl;
+                    }
+                if (hpemy1 < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh Habis" << endl;
+                    cout << "Darah Karakter " << player3.hp << "%" << endl;
+                    cout << "Kamu telah menang!!"<< endl;
+                    cout << "================" << endl;
+                    goto menang;
+                    cout << endl;
+                }
+                if(player3.hp < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh = " << hpemy1 << "%" << endl;
+                    cout << "Darah Karakter Habis" << endl;
+                    system("cls");
+                    cout <<"Kamu kalah, Lakukan tanding ulang" <<endl;
+                    cout << "================" << endl;
+                    goto kalah;
+                    cout << endl;
+                }
+            }
+        }
+        menang:
+        setcolor (12); //light red
+        cout << "\nKembali ke map"<< endl;
+}
+	
+//function enemy (medium)
+void enemy(){
+	int hp;
+    int dmg;
+    int dmgemy;
+    int att;
+    int hpemy2 = 1000;
+	
+	player player1;
+	player1.nama = "vrus";
+	player1.hp = 850;
+	player1.role = "Ninja";
+	player1.jurus [0] = "Shuriken";
+	player1.jurus [1] = "Sushi Bashi";
+	player1.jurus [2] = "Katana emas";
+	
+	player player2;
+	player2.nama = "Penebas";
+	player2.hp = 600;
+	player2.role = "Damage";
+	player2.jurus [0] = "Sontoryu";
+	player2.jurus [1] = "Kepasan Pedang";
+	player2.jurus [2] = "Ayunan Kapak ";
+   
+   	player player3;
+	player3.nama = "kyon";
+	player3.hp = 700;
+	player3.role = "spy";
+	player3.jurus [0] = "ranjau granat";
+	player3.jurus [1] = "pistol angin";
+	player3.jurus [2] = "upper kick";
+	
+    system("cls");
+    	int pilih;
+    	setcolor (11); //light aqua
+        cout << "Pilih Petarunx\n";
+        cout << "1. vrus\n";
+        cout << "2. penebas \n";
+        cout << "3. kyon \n";
+        cout << "petarunx pilihanmu = ";
+        cin >> pilih;
+        
+        system("cls");
+        kalah:
+        if (pilih == 1){
+            cout << "Memilih " << player1.nama << "\nMulai bertarung" << endl;
+            
+            while((hpemy2 > 0 ) && (player1.hp > 0)){
+            	setcolor (1); //blue
+                cout << " ========== Arena Bertarung  ==========\n"<< endl;
+                cout << "Pilih Serangan: " <<endl;
+                cout << "1." << player1.jurus[0] << endl;
+                cout << "2." << player1.jurus[1] <<endl;
+                cout << "3." << player1.jurus[2] << endl;
+                cout << "jurus yang dipilih : ";
+                cin >> att; 
+                cout << endl;
+                system("cls");
+
+                switch(att){
+                    case 1 :
+                    dmg = rand() % 22 + 5;
+                    hpemy2 = hpemy2 - dmg;
+                    break;
+
+                    case 2 :
+                    dmg = rand() % 15 + 4;
+                    hpemy2 = hpemy2 - dmg;
+                    break;
+
+                    case 3 : 
+                    dmg = rand() % 29 + 7;
+                    hpemy2 = hpemy2 - dmg;
+                    break;
+                    
+                    }
+
+                dmgemy = rand() % 10 + 10;
+                player1.hp = player1.hp - dmgemy;  
+                    
+                if(hpemy2 >0 && player1.hp >0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl ;
+                    cout << "Darah Musuh = " << hpemy2 << "%" << endl;
+                    cout << "Darah Karakter =" << player1.hp << "%" << endl;
+                    cout << "================" << endl;
+                    cout << endl;
+                    }
+                if (hpemy2 < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh Habis" << endl;
+                    cout << "Darah Karakter " << player1.hp << "%" << endl;
+                    cout << "Kamu telah menang!!"<< endl;
+                    cout << "================" << endl;
+                    goto menang;
+					cout << endl;
+                }
+                if(player1.hp < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh = " << hpemy2 << "%" << endl;
+                    cout << "Darah Karakter Habis" << endl;
+                    system("cls");
+                    cout <<"Kamu kalah, Lakukan tanding ulang" <<endl;
+                    cout << "================" << endl;
+                    goto kalah;
+                    cout << endl;
+                }
+            }
+        }
+        if (pilih == 2){
+            cout << "Memilih " << player2.nama << "\nMulai bertarung" << endl;
+            
+            while((hpemy2 > 0 ) && (player2.hp > 0)){
+            	setcolor (1);//blue
+                cout << " ========== Arena Bertarung  ==========\n"<< endl;
+                cout << "Pilih Serangan: " <<endl;
+                cout << "1." << player2.jurus[0] << endl;
+                cout << "2." << player2.jurus[1] <<endl;
+                cout << "3." << player2.jurus[2] << endl;
+                cout << "jurus yang dipilih : ";
+                cin >> att; 
+                cout << endl;
+                system("cls");
+
+                switch(att){
+                    case 1 :
+                    dmg = rand() % 25 + 5;
+                    hpemy2 = hpemy2 - dmg;
+                    break;
+
+                    case 2 :
+                    dmg = rand() % 16 + 9;
+                    hpemy2 = hpemy2 - dmg;
+                    break;
+
+                    case 3 : 
+                    dmg = rand() % 37 + 9;
+                    hpemy2 = hpemy2 - dmg;
+                    break;
+
+                    }
+
+                dmgemy = rand() % 15 + 9;
+                player2.hp = player2.hp - dmgemy;  
+                    
+                if(hpemy2 >0 && player2.hp >0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl ;
+                    cout << "Darah Musuh = " << hpemy2 << "%" << endl;
+                    cout << "Darah Karakter =" << player2.hp << "%" << endl;
+                    cout << "================" << endl;
+                    cout << endl;
+                    }
+                if (hpemy2 < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh Habis" << endl;
+                    cout << "Darah Karakter " << player2.hp << "%" << endl;
+                    cout << "Kamu telah menang!!"<< endl;
+                    cout << "================" << endl;
+                    goto menang;
+                    cout << endl;
+                    
+                }
+                if(player2.hp < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh = " << hpemy2 << "%" << endl;
+                    cout << "Darah Karakter Habis" << endl;
+                    system("cls");
+                    cout <<"Kamu kalah, Lakukan tanding ulang" <<endl;
+                    cout << "================" << endl;
+                    goto kalah;
+					cout << endl;
+                   
+                }
+            }
+        }
+        if (pilih == 3){
+            cout << "Memilih " << player3.nama << "\nMulai bertarung" << endl;
+            
+            while((hpemy2 > 0 ) && (player3.hp > 0)){
+            	setcolor (1);//blue
+                cout << " ========== Arena Bertarung  ==========\n"<< endl;
+                cout << "Pilih Serangan: " <<endl;
+                cout << "1." << player3.jurus[0] << endl;
+                cout << "2." << player3.jurus[1] <<endl;
+                cout << "3." << player3.jurus[2] << endl;
+                cout << "jurus yang dipilih : ";
+                cin >> att; 
+                cout << endl;
+                system("cls");
+
+                switch(att){
+                    case 1 :
+                    dmg = rand() % 30 + 2;
+                    hpemy2 = hpemy2 - dmg;
+                    break;
+
+                    case 2 :
+                    dmg = rand() % 29 + 7;
+                    hpemy2 = hpemy2 - dmg;
+                    break;
+
+                    case 3 : 
+                    dmg = rand() % 32 + 2;
+                    hpemy2 = hpemy2 - dmg;
+                    break;
+
+                    }
+
+                dmgemy = rand() % 23 + 6;
+                player3.hp = player3.hp - dmgemy;  
+                    
+                if(hpemy2 >0 && player3.hp >0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl ;
+                    cout << "Darah Musuh = " << hpemy2 << "%" << endl;
+                    cout << "Darah Karakter =" << player3.hp << "%" << endl;
+                    cout << "================" << endl;
+                    cout << endl;
+                    }
+                if (hpemy2 < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh Habis" << endl;
+                    cout << "Darah Karakter" << player3.hp << "%" << endl;
+                    cout << "Kamu telah menang!!"<< endl;
+                    cout << "================" << endl;
+                    goto menang;
+					cout << endl;
+                    
+                }
+                if(player3.hp < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh = " << hpemy2 << "%" << endl;
+                    cout << "Darah Karakter Habis" << endl;
+                    system("cls");
+                    cout <<"Kamu kalah, Lakukan tanding ulang" <<endl;
+                    cout << "================" << endl;
+                    goto kalah;
+                    cout << endl;
+                }
+            }
+        }
+        menang:
+        setcolor (12); //light red
+        cout << "\nKembali ke map"<< endl;
+}	
+//function enemy bos (hard)
+void bos(){
+	int hp;
+    int dmg;
+    int dmgemy;
+    int att;
+    int hpemy3 = 2000;
+    
+    player player1;
+	player1.nama = "Killer";
+	player1.hp = 1700;
+	player1.role = "Pemburu";
+	player1.jurus [0] = "Snap";
+	player1.jurus [1] = "Laser";
+	player1.jurus [2] = "kamehameha";
+	
+	player player2;
+	player2.nama = "Murderer";
+	player2.hp = 1600;
+	player2.role = "Damage";
+	player2.jurus [0] = "clink";
+	player2.jurus [1] = "hypno";
+	player2.jurus [2] = "The Ultimate";
+    
+    system("cls");
+    	int pilih;
+    	setcolor (6); //yellow 
+        cout << "Pilih Petarunx\n";
+        cout << "1. Killer\n";
+        cout << "2. Murderer \n";
+        cout << "petarunx pilihanmu = ";
+        cin >> pilih;
+        
+        system("cls");
+        kalah:
+        if (pilih == 1){
+            cout << "Memilih " << player1.nama << "\nMulai bertarung" << endl;
+            
+            while((hpemy3 > 0 ) && (player1.hp > 0)){
+            	setcolor (12); //light red
+                cout << " ========== Arena Bertarung  ==========\n"<< endl;
+                cout << "Pilih Serangan: " <<endl;
+                cout << "1." << player1.jurus[0] << endl;
+                cout << "2." << player1.jurus[1] <<endl;
+                cout << "3." << player1.jurus[2] << endl;
+                cout << "jurus yang dipilih : ";
+                cin >> att; 
+                cout << endl;
+                system("cls");
+
+                switch(att){
+                    case 1 :
+                    dmg = rand() % 30 + 5;
+                    hpemy3 = hpemy3 - dmg;
+                    break;
+
+                    case 2 :
+                    dmg = rand() % 25 + 10;
+                    hpemy3 = hpemy3 - dmg;
+                    break;
+
+                    case 3 : 
+                    dmg = rand() % 30 + 20;
+                    hpemy3 = hpemy3 - dmg;
+                    break;
+                    
+                    }
+
+                dmgemy = rand() % 20 + 10;
+                player1.hp = player1.hp - dmgemy;  
+                    
+                if(hpemy3 >0 && player1.hp >0){
+                	setcolor (6);//yellow
+                	cout << "================" << endl ;
+                    cout << "Darah Musuh = " << hpemy3 << "%" << endl;
+                    cout << "Darah Karakter =" << player1.hp << "%" << endl;
+                    cout << "================" << endl;
+                    cout << endl;
+                    }
+                if (hpemy3 < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh Habis" << endl;
+                    cout << "Darah Karakter " << player1.hp << "%" << endl;
+                    cout << "Kamu telah menang!!"<< endl;
+                    cout << "================" << endl;
+                    goto menang;
+                    cout << endl;
+                    
+                }
+                if(player1.hp < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh = " << hpemy3 << "%" << endl;
+                    cout << "Darah Karakter Habis" << endl;
+                    system("cls");
+                    cout <<"Kamu kalah, Lakukan tanding ulang" <<endl;
+                    cout << "================" << endl;
+                    goto kalah;
+                    cout << endl;
+                }
+            }
+        }
+        if (pilih == 2){
+            cout << "Memilih " << player2.nama << "\nMulai bertarung" << endl;
+            
+            while((hpemy3 > 0 ) && (player2.hp > 0)){
+            	setcolor (12); //light red
+                cout << " ========== Arena Bertarung  ==========\n"<< endl;
+                cout << "Pilih Serangan: " <<endl;
+                cout << "1." << player2.jurus[0] << endl;
+                cout << "2." << player2.jurus[1] <<endl;
+                cout << "3." << player2.jurus[2] << endl;
+                cout << "jurus yang dipilih : ";
+                cin >> att; 
+                cout << endl;
+                system("cls");
+
+                switch(att){
+                    case 1 :
+                    dmg = rand() % 25 + 15;
+                    hpemy3 = hpemy3 - dmg;
+                    break;
+
+                    case 2 :
+                    dmg = rand() % 20 + 25;
+                    hpemy3 = hpemy3 - dmg;
+                    break;
+
+                    case 3 : 
+                    dmg = rand() % 35 + 15;
+                    hpemy3 = hpemy3 - dmg;
+                    break;
+
+                    }
+
+                dmgemy = rand() % 20 + 10;
+                player2.hp = player2.hp - dmgemy;  
+                    
+                if(hpemy3 >0 && player2.hp >0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl ;
+                    cout << "Darah Musuh = " << hpemy3 << "%" << endl;
+                    cout << "Darah Karakter =" << player2.hp << "%" << endl;
+                    cout << "================" << endl;
+                    cout << endl;
+                    }
+                if (hpemy3 < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh Habis" << endl;
+                    cout << "Darah Karakter " << player2.hp << "%" << endl;
+                    cout << "Kamu telah menang!!"<< endl;
+                    cout << "================" << endl;
+                    goto menang;
+                    cout << endl;
+                    
+                }
+                if(player2.hp < 0){
+                	setcolor (6); //yellow
+                	cout << "================" << endl;
+                    cout << "Darah Musuh = " << hpemy3 << "%" << endl;
+                    cout << "Darah Karakter Habis" << endl;
+                    system("cls");
+                    cout <<"Kamu kalah, Lakukan tanding ulang" <<endl;
+                    cout << "================" << endl;
+                    goto kalah;
+                    cout << endl;
+                }
+            }
+        }
+		menang:
+		setcolor (2); //green
+		cout << "==============================================="<<endl;
+        cout << "SELAMAT KAMU TELAH MENAMATKAN GAME THE ATTACKER"<< endl;
+        cout << "==============================================="<<endl;
+		exit(0);
+}
+//function membuka gerbang
+void tombol(){
+	int tombol;
+    peta[posisiKarakterY][posisiKarakterX] == "#";
+    system("cls");
+    setcolor (12); //light red
+    cout << "WARNING!!! DIBALIK GERBANG TERDAPAT BOS"<< endl;
+    cout << "Yakin membuka gerbang? \n1.yakin\n2.tidak ";
+    cin >> tombol;
+    if (tombol == 1){
+    	setcolor (6); //light blue
+        cout << "======================\n" << endl; 
+        cout << "!!!!!!!GATE OPEN!!!!!!\n" << endl;
+        cout << "======================\n" << endl;
+        
+        setcolor(2);
+        cout << "===Karakter dipindahkan ke gerbang pertama====\n";
+
+        peta[posisiKarakterY = 8][posisiKarakterX = 15] = " ";
+        
+        }
+    if(tombol == 2){
+    	setcolor (14); //light yellow
+        cout << "Gerbang masih tertutup!\n";
+    }
+}
+//function tombol untuk gerak
+void movement(){
+       // Aturan menggerakkan karakter ke atas
         if(arrowKey == 72 && posisiKarakterY > 0){
-			if(peta[posisiKarakterY-1][posisiKarakterX] == 1 || peta[posisiKarakterY-1][posisiKarakterX] == 3){
+			if(peta[posisiKarakterY-1][posisiKarakterX] == " " || peta[posisiKarakterY-1][posisiKarakterX] == "!" || peta[posisiKarakterY-1][posisiKarakterX] == "E"  || peta[posisiKarakterY-1][posisiKarakterX] == "B"  || peta[posisiKarakterY-1][posisiKarakterX] == "|"){
             // Gerakkan karakter ke atas
             posisiKarakterY--;
         	}
     
         // Aturan menggerakkan karakter ke bawah
         }else if(arrowKey == 80 && posisiKarakterY < panjangPeta){
-        	if(peta[posisiKarakterY+1][posisiKarakterX] == 1 ||  peta[posisiKarakterY+1][posisiKarakterX] == 3){
+        	if(peta[posisiKarakterY+1][posisiKarakterX] == " " || peta[posisiKarakterY+1][posisiKarakterX] == "!" || peta[posisiKarakterY+1][posisiKarakterX] == "E" || peta[posisiKarakterY+1][posisiKarakterX] == "B" || peta[posisiKarakterY+1][posisiKarakterX] == "|"){
             // Gerakkan karakter ke atas
             posisiKarakterY++;
         	}
         
         // Aturan menggerakkan karakter ke kiri
         }else if(arrowKey == 75 && posisiKarakterX > 0){
-        	if(peta[posisiKarakterY][posisiKarakterX-1] == 1 ||  peta[posisiKarakterY][posisiKarakterX-1] == 3){
+        	if(peta[posisiKarakterY][posisiKarakterX-1] == " " || peta[posisiKarakterY][posisiKarakterX-1] == "!" || peta[posisiKarakterY][posisiKarakterX-1] == "E" || peta[posisiKarakterY][posisiKarakterX-1] == "B" || peta[posisiKarakterY][posisiKarakterX-1] == "|" ){
             // Gerakkan karakter ke atas
             posisiKarakterX--;
         	}
         
         // Aturan menggerakkan karakter ke kanan
         }else if(arrowKey == 77 && posisiKarakterX < lebarPeta){
-			if(peta[posisiKarakterY][posisiKarakterX+1] == 1 ||  peta[posisiKarakterY][posisiKarakterX+1] == 3){
+			if(peta[posisiKarakterY][posisiKarakterX+1] == " " || peta[posisiKarakterY][posisiKarakterX+1] == "!" || peta[posisiKarakterY][posisiKarakterX+1] == "E" || peta[posisiKarakterY][posisiKarakterX+1] == "B" || peta[posisiKarakterY][posisiKarakterX+1] == "|"){
             // Gerakkan karakter ke atas
             posisiKarakterX++;
         	}
 		
 		//aturan tombol exit
 		}else if (arrowKey == 27){
-			setcolor (12);
-			cout << "Terima Kasih telah Memainkan Program Ini";
+			setcolor (12); //red
+			cout << "\nTerima Kasih telah Memainkan Program Ini";
 			exit(0);
 		}
-		
-        //render grafik
-	    for (int y = 0; y < lebarPeta; y++)
-		{
-		  for (int x = 0; x < panjangPeta; x++)
-		    {
-					if (posisiKarakterX == x && posisiKarakterY == y)
-				{
-					setcolor (12);
-					cout << 'P';	
-				}
-					else if (peta[y][x] == 1)
-				{
-			  		setcolor (15);		//white
-			  		cout << '.';		//jalan
-				}
-					else if (peta[y][x] == 3)
-				{
-			  		setcolor (9);		//Blue
-			  		cout << '~' ;		//sungai
-				}
-		      		else if (peta[y][x] == 5)
-				{
-			  		setcolor (8);		//grey
-			  		cout << '#';		//dinding tembok
-				}
-		     		else
-		     	{
-				}
-		    }
-		  cout << endl;
-		}
-		
-		//Random treasure 
-		if(peta[posisiKarakterX][posisiKarakterY] == 1){
-			cout << endl;
-			cout << "Karakter Sedang Berada di Jalan"<<endl;
-			if (randomTreasure == 1){
-				setcolor (12);
-				cout << "Anda menemukan tresure " << bonus[0].nama << " Stats Hp = " << bonus[0].hp << " Damage = " << bonus[0].damage << " Defense = " << bonus[0].def << endl;
-				cout << "Ambil atau Tingalkan? (y/t)";
-				cin >> keputusan;
-				
-				if (keputusan == 'y' || keputusan == 'Y'){
-					
-					//Hp
-					cout << "Menambahkan stats Hp dari " << player.Hp << " Menjadi ";
-					player.Hp = player.Hp + bonus[0].hp;
-					int updateHp;
-					updateHp = player.Hp;
-					cout << updateHp << endl;
-					
-					//damage
-					cout << "Menambahkan stats damage dari " << player.damage << " Menjadi ";
-					player.damage = player.damage + bonus[0].damage;
-					int updatedmg;
-					updatedmg = player.damage;
-					cout << updatedmg << endl;
-					
-					//defense
-					cout << "Menambahkan stats defense dari " << player.def<< " Menjadi ";
-					player.def = player.def + bonus[0].def;
-					int updatedef;
-					updatedef = player.def;
-					cout << updatedef << endl;
-					
-					setcolor (6);
-					cout << "total status akhir: \n";
-					cout << "Hp = " << updateHp <<endl;
-					cout << "Damage = " << updatedmg <<endl;
-					cout << "Defense = "<< updatedef << endl;
-					
-				}else if (keputusan == 2 || keputusan >= 2){
-					setcolor (6);
-					cout << "treasure ditinggalkan ";
-				}
-				
-			}else if (randomTreasure == 2){
-				setcolor (12);
-				cout << "Anda menemukan tresure " << bonus[1].nama << " Stats Hp = " << bonus[1].hp << " Damage = " << bonus[1].damage << " Defense = " << bonus[0].def << endl;
-				cout << "Ambil atau Tingalkan? (y/t)";
-				char keputusan;
-				cin >> keputusan;
-				
-				if (keputusan == 'y' || keputusan == 'Y'){
-					
-					//Hp
-					cout << "Menambahkan stats Hp awal = " << player.Hp << endl;
-					player.Hp = player.Hp + bonus[1].hp;
-					int updateHp;
-					updateHp = player.Hp;
-					
-				
-					//damage
-					cout << "Menambahkan stats damage dari " << player.damage << endl;
-					player.damage = player.damage + bonus[1].damage;
-					int updatedmg;
-					updatedmg = player.damage;
-					
-					
-					//defense
-					cout << "Menambahkan stats defense dari " << player.def<< endl ;
-					player.def = player.def + bonus[1].def;
-					int updatedef;
-					updatedef = player.def;
-					
-					setcolor (6);
-					cout << "total status akhir: \n";
-					cout << "Hp = " << updateHp <<endl;
-					cout << "Damage = " << updatedmg <<endl;
-					cout << "Defense = "<< updatedef << endl;
-				}else if (keputusan == 2 || keputusan >= 2){
-					setcolor (6);
-					cout << "treasure ditinggalkan ";
-				}
-			}
-		}
-		
-		//random monster 1
-		if(peta[posisiKarakterX][posisiKarakterY] == 1){
-        	cout<<"Karakter berada di jalan!\n";
-            if (randomMonster == 1) {
-            	setcolor (6);
-                cout << "Anda Menemukan " << monster1.nama;
-				cout << "Status Monster : \n";
-				cout << "Hp = " << monster1.Hp << endl; 
-				cout << "Damage = "<< monster1.damage <<endl; 
-				cout << "Defense = " << monster1.def <<endl;
-                
-                cout <<"Anda Ingin bertarung ? (1/0)\n";
-                cout << "1. lawan\n";
-                cout << "0. kabur\n";
-                cin>>serang;
-                
-                if(serang == 0){
-                		cout<<"Anda memilih kabur.."<<endl;
-				}else if(serang == 1){
-						cout<<"Bersiap bertarung!" <<endl;
-						
-				}else{
-					cout << endl;
-				}
-				 while(serang != 0 && serang == 1)
-				{
-
-				char input_battle = ' ';
-				cout << " ========== Arena Bertarung  ==========\n"<< endl;
-				cout << "Karakter Anda " << player.nama << " Hp : " << player.Hp << " damage " << player.damage << " defend " << player.def << endl;
-				cout << monster1.nama << " Hp : " << monster1.Hp << " damage " << monster1.damage << " defend " << monster1.def  << endl;
-				cout << "Tekan q untuk menyerang!" << endl;
-				input_battle = getch();
-
-				if (input_battle == 'q' || input_battle == 'Q')
-				{
-					player.AtkPlayer(&monster1.Hp, &monster1.def);
-					monster1.AtkMonster(&player.Hp, &player.def);
-				}
-
-				if (monster1.Hp <= 0)
-				{
-					peta[posisiKarakterY][posisiKarakterX] = 1;
-					setcolor(11);
-					cout << "Karakter berhasil mengalahkan " << monster1.nama << endl;
-					setcolor(7);
-						
-					break;
-				}
-				
-			}
-		}else if (randomMonster == 2) {
-            	setcolor (6);
-                cout << "Anda Menemukan " << monster2.nama<<endl;
-				cout << "Status Monster : \n";
-				cout << "Hp = " << monster2.Hp << endl; 
-				cout << "Damage = "<< monster2.damage <<endl; 
-				cout << "Defense = " << monster2.def <<endl;
-                
-                cout <<"Anda Ingin bertarung ? (1/0)\n";
-                cout << "1. lawan\n";
-                cout << "0. kabur\n";
-                cin>>serang;
-                
-                if(serang == 0){
-                		cout<<"Anda memilih kabur.."<<endl;
-				}else if(serang == 1){
-						cout<<"Bersiap bertarung!" <<endl;
-						
-				}else{
-					cout << endl;
-				}
-				 while(serang != 0 && serang == 1)
-				{
-
-				char input_battle = ' ';
-				cout << " ========== Arena Bertarung  ==========\n"<< endl;
-				cout << "Karakter Anda " << player.nama << " Hp : " << player.Hp << " damage " << player.damage << " defend " << player.def << endl;
-				cout << monster2.nama << " Hp : " << monster2.Hp << " damage " << monster2.damage << " defend " << monster2.def  << endl;
-				cout << "Tekan q untuk menyerang!" << endl;
-				input_battle = getch();
-
-				if (input_battle == 'q' || input_battle == 'Q')
-				{
-					player.AtkPlayer(&monster2.Hp, &monster2.def);
-					monster2.AtkMonster(&player.Hp, &player.def);
-				}
-
-				if (monster2.Hp <= 0)
-				{
-					peta[posisiKarakterY][posisiKarakterX] = 1;
-					setcolor(11);
-					cout << "Karakter berhasil mengalahkan " << monster2.nama << endl;
-					setcolor(7);
-						
-					break;
-				}
-				
-				}
-			}
-	}
-	
-	//random monster 2
-		if(peta[posisiKarakterX][posisiKarakterY] == 3){
-        	cout<<"Karakter berada di sungai!\n";
-            if (randomMonster == 2) {
-            	setcolor (6);
-                cout << "Anda Menemukan " << monster2.nama<<endl;
-				cout << "Status Monster : \n";
-				cout << "Hp = " << monster2.Hp << endl; 
-				cout << "Damage = "<< monster2.damage <<endl; 
-				cout << "Defense = " << monster2.def <<endl;
-                
-                cout <<"Anda Ingin bertarung ? (1/0)\n";
-                cout << "1. lawan\n";
-                cout << "0. kabur\n";
-                cin>>serang;
-                
-                if(serang == 0){
-                		cout<<"Anda memilih kabur.."<<endl;
-				}else if(serang == 1){
-						cout<<"Bersiap bertarung!" <<endl;
-						
-				}else{
-					cout << endl;
-				}
-				 while(serang != 0 && serang == 1)
-				{
-					
-				char input_battle = ' ';
-				cout << " ========== Arena Bertarung  ==========\n"<< endl;
-				cout << "Karakter Anda " << player.nama << " Hp : " << player.Hp << " damage " << player.damage << " defend " << player.def << endl;
-				cout << monster2.nama << " Hp : " << monster2.Hp << " damage " << monster2.damage << " defend " << monster2.def  << endl;
-				cout << "Tekan q untuk menyerang!" << endl;
-				input_battle = getch();
-
-				if (input_battle == 'q' || input_battle == 'Q')
-				{
-					player.AtkPlayer(&monster2.Hp, &monster2.def);
-					monster2.AtkMonster(&player.Hp, &player.def);
-				}
-
-				if (monster2.Hp <= 0)
-				{
-					peta[posisiKarakterY][posisiKarakterX] = 1;
-					setcolor(11);
-					cout << "Karakter berhasil mengalahkan " << monster2.nama << endl;
-					setcolor(7);
-						
-					break;
-				}
-				}
-			}else if (randomMonster == 1) {
-            	setcolor (6);
-                cout << "Anda Menemukan " << monster1.nama;
-				cout << "Status Monster : \n";
-				cout << "Hp = " << monster1.Hp << endl; 
-				cout << "Damage = "<< monster1.damage <<endl; 
-				cout << "Defense = " << monster1.def <<endl;
-                
-                cout <<"Anda Ingin bertarung ? (1/0)\n";
-                cout << "1. lawan\n";
-                cout << "0. kabur\n";
-                cin>>serang;
-                
-                if(serang == 0){
-                		cout<<"Anda memilih kabur.."<<endl;
-				}else if(serang == 1){
-						cout<<"Bersiap bertarung!" <<endl;
-						
-				}else{
-					cout << endl;
-				}
-				 while(serang != 0 && serang == 1)
-				{
-
-				char input_battle = ' ';
-				cout << " ========== Arena Bertarung  ==========\n"<< endl;
-				cout << "Karakter Anda " << player.nama << " Hp : " << player.Hp << " damage " << player.damage << " defend " << player.def << endl;
-				cout << monster1.nama << " Hp : " << monster1.Hp << " damage " << monster1.damage << " defend " << monster1.def  << endl;
-				cout << "Tekan q untuk menyerang!" << endl;
-				input_battle = getch();
-
-				if (input_battle == 'q' || input_battle == 'Q')
-				{
-					player.AtkPlayer(&monster1.Hp, &monster1.def);
-					monster1.AtkMonster(&player.Hp, &player.def);
-				}
-
-				if (monster1.Hp <= 0)
-				{
-					peta[posisiKarakterY][posisiKarakterX] = 1;
-					setcolor(11);
-					cout << "Karakter berhasil mengalahkan " << monster1.nama << endl;
-					setcolor(7);
-						
-					break;
-				}
-				
-				}
-			}
-		}
-	}
 }
-
+//funtion judul game
+void judul() 
+{	
+	string lanjut;
+	setcolor (6); //yellow
+	cout << "||------------------------------------------------------||\n";
+	cout << "||                 Welcome to The Attacker              ||\n";
+	cout << "||                    a game made by                    ||\n";
+	cout << "||                   M Rizky Ramadhani                  ||\n";
+	cout << "||------------------------------------------------------||\n";
+	cout << endl;
+	cout << "The Attacker adalah game yang berlatar tempat disebuah tempat.\n";
+	cout << "Dimana setiap karakter diharuskan bertarung di tempat tersebut.\n";
+	cout << "Karakter akan menghadapi berbagai musuh dari easy sampai bos. \n";
+	cout << "Ayo mainkan The Attacker dan Bantu Karakter agar dapat mengalahkan Bos!!\n";
+	
+	cout << "\nMasukkan M untuk melanjutkan" << endl;
+    cin >> lanjut;
+    system("cls");	
+    
+    cout << "Aturan di dalam game : \n";
+    cout << "Kalahkan Musuh dan Bos Untuk Memenangkan GAME ";
+    cout << "symbol Y = player\n ";
+    cout << "symbol ^ = pohon, tidak dapat dilewati player\n ";
+    cout << "symbol # = batu atau gedung, tidak dapat dilewati player\n ";
+    cout << "symbol ! = musuh easy, dapat dilawan player\n ";
+    cout << "symbol E = musuh medium, dapat dilawan player\n ";
+    cout << "symbol B = bos hard, dapat dilawan player\n ";
+    
+    cout << "\nMasukkan M untuk melanjutkan" << endl;
+    cin >> lanjut;
+    system("cls");
+    
+    
+}
