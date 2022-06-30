@@ -7,7 +7,7 @@ using namespace std;
 #define KEY_UP 72 //tombol bergerak ke atas
 #define KEY_DOWN 75 //tombol bergerak ke bawah
 #define KEY_LEFT 77 //tombol bergerak ke kiri 
-#define KEY RIGHT 80 //tombol bergerak ke kanan
+#define KEY_RIGHT 80 //tombol bergerak ke kanan
 #define KEY_EXIT 27 //tombol exit
 
 //define structure player
